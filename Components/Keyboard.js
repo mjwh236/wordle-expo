@@ -1,17 +1,33 @@
-import React, { useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import React from "react";
+import { View, TouchableOpacity, Text } from "react-native";
 
 const KeyboardButton = ({
   value = "?",
   onPress = () => {},
   width = 40,
   height = 50,
-  fontSize = 14,
+  fontSize = 28,
+  selected = "test",
+  index,
+  guessList = [],
+  keyboardColors,
 }) => {
+  const colorSquare = ({ selected = "", letter, index }) => {
+    let c = "lightpink";
+
+    if (keyboardColors[value] === "correct") {
+      c = "lightgreen";
+    } else if (keyboardColors[value] === "found") {
+      c = "lightyellow";
+    } else if (keyboardColors[value] === "absent") {
+      c = "gray";
+    }
+
+    return c;
+  };
+
+  const backgroundColor = colorSquare({ selected, value });
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -20,7 +36,8 @@ const KeyboardButton = ({
       style={{
         width,
         height,
-        backgroundColor: "lightpink",
+        // backgroundColor: "lightpink",
+        backgroundColor,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -33,14 +50,18 @@ const KeyboardButton = ({
   );
 };
 
-const Keyboard = ({ onPress = () => {} }) => {
+const Keyboard = ({
+  onPress = () => {},
+  selected = "tests",
+  guessList = ["test"],
+  keyboardColors,
+}) => {
   const row1 = "qwertyuiop";
   const row2 = "asdfghjkl";
   const row3 = "zxcvbnm";
   return (
     <View
       style={{
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -56,11 +77,14 @@ const Keyboard = ({ onPress = () => {} }) => {
         {[...row1.toUpperCase()].map((l, idx) => {
           return (
             <KeyboardButton
+              selected={selected}
               onPress={() => {
                 onPress(l);
               }}
               value={l}
               key={idx}
+              guessList={guessList}
+              keyboardColors={keyboardColors}
             />
           );
         })}
@@ -75,6 +99,9 @@ const Keyboard = ({ onPress = () => {} }) => {
       >
         {[...row2.toUpperCase()].map((l, idx) => (
           <KeyboardButton
+            selected={selected}
+            guessList={guessList}
+            keyboardColors={keyboardColors}
             onPress={() => {
               onPress(l);
             }}
@@ -92,14 +119,21 @@ const Keyboard = ({ onPress = () => {} }) => {
         }}
       >
         <KeyboardButton
+          selected={selected}
+          guessList={guessList}
+          keyboardColors={keyboardColors}
           value="DELETE"
           width={60}
+          fontSize={14}
           onPress={() => {
             onPress("DELETE");
           }}
         />
         {[...row3.toUpperCase()].map((l, idx) => (
           <KeyboardButton
+            selected={selected}
+            guessList={guessList}
+            keyboardColors={keyboardColors}
             onPress={() => {
               onPress(l);
             }}
@@ -108,11 +142,15 @@ const Keyboard = ({ onPress = () => {} }) => {
           />
         ))}
         <KeyboardButton
+          selected={selected}
+          guessList={guessList}
+          keyboardColors={keyboardColors}
           value="ENTER"
           width={60}
           onPress={() => {
             onPress("ENTER");
           }}
+          fontSize={14}
         />
       </View>
     </View>
